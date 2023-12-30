@@ -1,4 +1,4 @@
-using Seayoo.OmniSDK;
+using Combo;
 using UnityEngine;
 using EasyUI.Toast;
 using System.IO;
@@ -10,19 +10,24 @@ public class Demo : MonoBehaviour
     public static bool isInit = false;
     public UserInfoPanel userInfoPanel;
     public PurchasePanel purchasePanel;
-    public TrackPanel trackPanel;
     void Start()
     {
-        OmniSDK.Setup(r =>
+        var setupOptions = new ComboSDKSetupOptions
         {
-            if (r.IsSuccess())
+            gameId = "demo",
+            publishableKey = "demo_publishable_key"
+        };
+
+        ComboSDK.Setup(setupOptions, r =>
+        {
+            if (r.IsSuccess)
             {
-                var result = r.Get();
-                Debug.LogWarning($"Initialization Successful: APPID - {result.appId}; CHANNELNAME - {result.channelName}; PLANID - {result.planId}; SDKVERSION - {result.sdkVersion}; CPSNAME - {result.cpsName}");
+                var result = r.Data;
+                Debug.Log($"初始化成功: GAMDID - {result.gameId}; DISTRO - {result.distro}; SDKVERSION - {result.sdkVersion}; PLATFORMVERSION - {result.platformVersion}");
             }
             else
             {
-                var err = r.GetError();
+                var err = r.Error;
                 Toast.Show($"初始化失败：{err.Message}");
                 Debug.LogError("初始化失败: " + err.DetailMessage);
             }
@@ -33,56 +38,57 @@ public class Demo : MonoBehaviour
     {
         Debug.LogWarning("OnLogin called");
 
-        OmniSDK.Login(r =>
+        ComboSDK.Login(r =>
         {
-            if (r.IsSuccess())
+            if (r.IsSuccess)
             {
-                var result = r.Get();
-                Debug.Log("登录成功: " + result.loginInfo.userId);
+                var result = r.Data;
+                Debug.LogWarning($"登录成功: COMBOID - {result.loginInfo.comboId}; TOKEN - {result.loginInfo.identityToken}");
             }
             else
             {
-                var err = r.GetError();
-                if (err.Code == OmniSDKErrorCode.UserCancelled)
+                var error = r.Error;
+                if (error.Error == ComboSDKErrorTypes.UserCancelled)
                 {
                     Toast.Show("用户取消登录");
+                    return;
                 }
-                else 
-                {
-                    Debug.LogError("登录失败: " + err.DetailMessage);
-                    Toast.Show($"登录失败：{err.Message}");
-                }
+                Toast.Show($"登录失败：{error.Message}");
+                Debug.LogError("登录失败: " + error.DetailMessage);
             }
         });
     }
 
     public void OnGetUserInfo()
     {
-        var info = OmniSDK.GetLoginInfo();
-        if (info == null)
+        var info = ComboSDK.GetLoginInfo();
+        if (info == null || string.IsNullOrEmpty(info.comboId))
         {
-            Toast.Show("请先登录");
+            Toast.Show("用户未登录");
             return;
         }
         userInfoPanel.Show(info);
-        Debug.Log($"GetUserInfo: userId = {info.userId}," +
-        $"signature = {info.signature} authTime = {info.authTime}");
+        Debug.Log($"GetUserInfo: comboId = {info.comboId}," + $"identityToken = {info.identityToken}");
     }
 
     public void OnLogout()
     {
-        Debug.LogWarning("OnLogout called");
-        OmniSDK.Logout(r =>
+        ComboSDK.Logout(r =>
         {
-            if (r.IsSuccess())
+            if (r.IsSuccess)
             {
-                var result = r.Get();
-                Toast.Show($"用户 {result.userId} 登出成功");
-                Debug.Log($"登出成功: UserId - {result.userId}");
+                var result = r.Data;
+                if (result == null || string.IsNullOrEmpty(result.comboId))
+                {
+                    Toast.Show($"用户未登录");
+                    return;
+                }
+                Toast.Show($"用户 {result.comboId} 登出成功");
+                Debug.Log($"登出成功: UserId - {result.comboId}");
             }
             else
             {
-                var err = r.GetError();
+                var err = r.Error;
                 Debug.LogError("登出失败: " + err.DetailMessage);
             }
         });
@@ -93,35 +99,26 @@ public class Demo : MonoBehaviour
         purchasePanel.Show();
     }
 
-    public void OnTrack()
-    {
-        trackPanel.Show();
-    }
-
     public void OnPreloadAd()
     {
         Debug.LogWarning("OnPreloadAd called");
 
-        var opts = new OmniSDKAdOptions
+        var opts = new ComboSDKPreloadAdOptions
         {
-#if UNITY_ANDROID
-            placementId = "android_launch_sense_award_1",
-#elif UNITY_IOS
-            placementId = "test_ios_RV_1",
-#endif
+            placementId = "test_placement_id",
         };
         Debug.LogWarning("PreloadAd PlacementId: " + opts.placementId);
-        OmniSDK.PreloadAd(opts, r =>
+        ComboSDK.PreloadAd(opts, r =>
         {
-            if (r.IsSuccess())
+            if (r.IsSuccess)
             {
-                var result = r.Get();
-                Toast.Show($"广告 {result.placementId} 预加载成功", 2f, ToastColor.Black);
+                var result = r.Data;
+                Toast.Show($"广告 {result.placementId} 预加载成功");
                 Debug.Log("广告预加载成功: PlacementId - " + result.placementId);
             }
             else
             {
-                var err = r.GetError();
+                var err = r.Error;
                 Toast.Show($"广告 {opts.placementId} 预加载失败\n{err.Message}");
                 Debug.LogError("广告预加载失败: " + err.DetailMessage);
             }
@@ -130,113 +127,44 @@ public class Demo : MonoBehaviour
 
     public void OnShowAd()
     {
-        Debug.LogWarning("OnShowAd called");
-
-        var opts = new OmniSDKAdOptions
+        var opts = new ComboSDKShowAdOptions
         {
-#if UNITY_ANDROID
-            placementId = "android_launch_sense_award_1",
-#elif UNITY_IOS
-            placementId = "test_ios_RV_1",
-#endif
+            placementId = "ios_topon_test_01",
         };
-        Debug.LogWarning("ShowAd PlacementId: " + opts.placementId);
-        OmniSDK.ShowAd(opts, r =>
+        ComboSDK.ShowAd(opts, r =>
         {
-            if (r.IsSuccess())
+            if (r.IsSuccess)
             {
-                var result = r.Get();
-                Toast.Show($"广告 {result.token} 显示成功", 2f, ToastColor.Black);
-                Debug.Log($"广告显示成功: Status - {result.status}; Token - {result.token}");
+                var result = r.Data;
+                Toast.Show($"广告 {result.adToken} 显示成功");
+                Debug.Log($"广告显示成功: Status - {result.status}; Token - {result.adToken}");
             }
             else
             {
-                var err = r.GetError();
+                var err = r.Error;
                 Toast.Show($"广告 {opts.placementId} 显示失败\n{err.Message}");
                 Debug.LogError("广告显示失败: " + err.DetailMessage);
             }
         });
     }
+    public void OnForceCrash()
+    {
+        DemoUtils.ForceCrash();
+    }
 
     public void OnShare()
     {
-        Debug.LogWarning("OnShare called");
-
-        string localPath = Path.Combine(Application.streamingAssetsPath, "sharePicture.png");
-
-        var opts = new OmniSDKShareOptions
-        {
-            platform = OmniSDKSharePlatform.SYSTEM,
-            title = "Mock Title",
-            description = "Mock Description",
-            linkUrl = localPath,
-            imageUrl = "https://cn.bing.com/th?id=OHR.CERNCenter_EN-US9854867489_1920x1080.jpg"
-        };
-
-        OmniSDK.Share(opts, r =>
-        {
-            if (r.IsSuccess())
-            {
-                var result = r.Get();
-                Debug.Log("分享成功");
-                Toast.Show("分享成功");
-            }
-            else
-            {
-                var err = r.GetError();
-                Toast.Show("分享失败：" + err.Message);
-                Debug.LogError("分享失败: " + err.DetailMessage);
-            }
-        });
     }
 
     public void OnCaptureMessage()
     {
-        Debug.LogWarning("OnCaptureMessage called");
-
-        var opts = new OmniSDKCaptureOptions
-        {
-            payload = "Unity test message for sentry capture.",
-            level = OmniSDKCaptureLevel.ERROR,
-            extraData = new Dictionary<string, string> {
-                {"StackTrace", "Stack trace information."},
-                {"Other", "Other data."}
-            }
-        };
-
-        OmniSDK.Capture(opts);
-        Toast.Show("已提交消息至 Sentry");
     }
 
     public void OnOpenAccountCenter()
     {
-        Debug.LogWarning("OnOpenAccountCenter called");
-
-        OmniSDK.OpenAccountCenter();
     }
 
     public void OnDeleteAccount()
     {
-        Debug.LogWarning("OnDeleteAccount called");
-
-        var opts = new OmniSDKDeleteAccountOptions
-        {
-            enableCustomUI = false
-        };
-        OmniSDK.DeleteAccount(opts, r =>
-        {
-            if (r.IsSuccess())
-            {
-                var result = r.Get();
-                Toast.Show("账号删除成功: UserId - " + result.userId);
-                Debug.LogWarning("账号删除成功: UserId - " + result.userId);
-            }
-            else
-            {
-                var err = r.GetError();
-                Toast.Show("账号删除失败: " + err.Message);
-                Debug.LogError("账号删除失败: " + err.DetailMessage);
-            }
-        });
     }
 }

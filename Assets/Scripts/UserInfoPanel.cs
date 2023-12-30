@@ -1,17 +1,15 @@
-using Seayoo.OmniSDK;
+using Combo;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UserInfoPanel : MonoBehaviour
 {
-    public Text userId;
-    public Text signature;
+    public Text loginInfo;
 
-    public void Show(OmniSDKLoginInfo info)
+    public void Show(ComboSDKLoginInfo info)
     {
         this.gameObject.SetActive(true);
-        userId.text = "User Id: " + info.userId;
-        signature.text = "Signature: " + info.signature;
+        loginInfo.text = $"ComboId:\n {info.comboId}\n";
     }
 
     public void Close()
