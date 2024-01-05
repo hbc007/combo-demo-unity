@@ -136,8 +136,8 @@ public class Demo : MonoBehaviour
             if (r.IsSuccess)
             {
                 var result = r.Data;
-                Toast.Show($"广告 {result.adToken} 显示成功");
-                Debug.Log($"广告显示成功: Status - {result.status}; Token - {result.adToken}");
+                Toast.Show($"广告 {result.token} 显示成功");
+                Debug.Log($"广告显示成功: Status - {result.status}; Token - {result.token}");
             }
             else
             {
