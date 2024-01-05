@@ -21,7 +21,7 @@ public class PurchasePanel : MonoBehaviour
 
     private void OnPurchase()
     {
-        var opts = new ComboSDKPurchaseOptions
+        var opts = new PurchaseOptions
         {
             orderToken = productIdField.text
         };

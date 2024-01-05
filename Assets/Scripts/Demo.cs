@@ -12,7 +12,7 @@ public class Demo : MonoBehaviour
     public PurchasePanel purchasePanel;
     void Start()
     {
-        var setupOptions = new ComboSDKSetupOptions
+        var setupOptions = new SetupOptions
         {
             gameId = "demo",
             publishableKey = "demo_publishable_key"
@@ -23,7 +23,7 @@ public class Demo : MonoBehaviour
             if (r.IsSuccess)
             {
                 var result = r.Data;
-                Debug.Log($"初始化成功: GAMDID - {result.gameId}; DISTRO - {result.distro}; SDKVERSION - {result.sdkVersion}; PLATFORMVERSION - {result.platformVersion}");
+                Debug.Log($"初始化成功");
             }
             else
             {
@@ -48,7 +48,7 @@ public class Demo : MonoBehaviour
             else
             {
                 var error = r.Error;
-                if (error.Error == ComboSDKErrorTypes.UserCancelled)
+                if (error.Code == ErrorCode.UserCancelled)
                 {
                     Toast.Show("用户取消登录");
                     return;
@@ -103,7 +103,7 @@ public class Demo : MonoBehaviour
     {
         Debug.LogWarning("OnPreloadAd called");
 
-        var opts = new ComboSDKPreloadAdOptions
+        var opts = new PreloadAdOptions
         {
             placementId = "test_placement_id",
         };
@@ -127,7 +127,7 @@ public class Demo : MonoBehaviour
 
     public void OnShowAd()
     {
-        var opts = new ComboSDKShowAdOptions
+        var opts = new ShowAdOptions
         {
             placementId = "ios_topon_test_01",
         };

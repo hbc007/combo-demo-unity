@@ -6,7 +6,7 @@ public class UserInfoPanel : MonoBehaviour
 {
     public Text loginInfo;
 
-    public void Show(ComboSDKLoginInfo info)
+    public void Show(LoginInfo info)
     {
         this.gameObject.SetActive(true);
         loginInfo.text = $"ComboId:\n {info.comboId}\n";
