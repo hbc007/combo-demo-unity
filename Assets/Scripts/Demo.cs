@@ -10,26 +10,30 @@ public class Demo : MonoBehaviour
     public static bool isInit = false;
     public UserInfoPanel userInfoPanel;
     public PurchasePanel purchasePanel;
-    void Start()
-    {
-        var setupOptions = new SetupOptions
-        {
-            gameId = "demo",
-            publishableKey = "demo_publishable_key"
-        };
 
-        ComboSDK.Setup(setupOptions, r =>
+    void Start() {
+        ComboSDK.OnKickOut(r =>
         {
             if (r.IsSuccess)
             {
                 var result = r.Data;
-                Debug.Log($"初始化成功");
+                Toast.Show($"踢出成功");
+                Debug.Log($"踢出成功, shouldExit: {result.shouldExit}");
+                if (result.shouldExit)
+                {
+                    Application.Quit();
+                }
+                else
+                {
+                    Toast.Show($"您已被强制下线");
+                    Debug.LogError("用户强制下线");
+                }
             }
             else
             {
                 var err = r.Error;
-                Toast.Show($"初始化失败：{err.Message}");
-                Debug.LogError("初始化失败: " + err.DetailMessage);
+                Toast.Show($"踢出失败：{err.Message}");
+                Debug.LogError("踢出失败: " + err.DetailMessage);
             }
         });
     }
@@ -152,19 +156,58 @@ public class Demo : MonoBehaviour
         DemoUtils.ForceCrash();
     }
 
-    public void OnShare()
+    public void OnShareLink()
     {
+        var opts = new SystemShareOptions
+        {
+           text = "链接分享",
+           linkUrl = "https://docs.seayoo.com/",
+        };
+
+        SocialShare(opts);
     }
 
-    public void OnCaptureMessage()
+    public void OnShareLocalImage()
     {
+        byte[] bytes = ScreenCapture.CaptureScreenshotAsTexture().EncodeToPNG();
+        string path = Path.Combine(Application.temporaryCachePath, "sharePicture.png");
+        File.WriteAllBytes(path, bytes);
+
+        var opts = new SystemShareOptions
+        {
+           imageUrl = path
+        };
+
+        SocialShare(opts);
     }
 
-    public void OnOpenAccountCenter()
+    public void OnShareOnlineImage()
     {
+        var opts = new SystemShareOptions
+        {
+           text = "网络图片分享",
+           imageUrl = "https://cn.bing.com/th?id=OHR.CERNCenter_EN-US9854867489_1920x1080.jpg"
+        };
+
+        SocialShare(opts);
     }
 
-    public void OnDeleteAccount()
+    private void SocialShare(SystemShareOptions opts) 
     {
+        ComboSDK.SocialShare(opts, r =>
+        {
+           if (r.IsSuccess)
+           {
+               var result = r.Data;
+               Toast.Show("分享成功");
+               Debug.Log("分享成功");
+           }
+           else
+           {
+               var err = r.Error;
+               Toast.Show("分享失败：" + err.Message);
+               Debug.LogError("分享失败: " + err.DetailMessage);
+           }
+        });
     }
 }

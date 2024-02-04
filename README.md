@@ -6,7 +6,7 @@
 
 ### Environment
 
-Unity Version: `2018.4.36f1` or later
+Unity Version: `2019.4.40f1` or later
 
 ### Prepare
 

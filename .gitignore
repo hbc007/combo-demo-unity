@@ -11,6 +11,11 @@
 /[Uu]ser[Ss]ettings/
 /Archive
 /Bin
+/Output
+
+# Combo
+Packages/com.seayoo.sdk/
+Assets/Resources/ComboSDK*
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
