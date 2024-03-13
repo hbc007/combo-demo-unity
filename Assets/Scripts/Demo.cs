@@ -4,14 +4,23 @@ using EasyUI.Toast;
 using System.IO;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using UnityEngine.UI;
 
 public class Demo : MonoBehaviour
 {
     public static bool isInit = false;
     public UserInfoPanel userInfoPanel;
     public PurchasePanel purchasePanel;
+    public DownloadUrlPanel downloadUrlPanel;
+    public Text metaInfo;
 
     void Start() {
+        metaInfo.text =
+            $@"DeviceId:{ComboSDK.GetDeviceId()}
+ComboSDK v{ComboSDK.GetVersion()} with NativeSDK v{ComboSDK.GetVersionNative()} GameId:{ComboSDK.GetGameId()} - Distro:{ComboSDK.GetDistro()}";
+#if UNITY_ANDROID
+        metaText.text += $" - Variant:{ComboSDK.GetVariant()} - Subvariant:{ComboSDK.GetSubvariant()}";
+#endif
         ComboSDK.OnKickOut(r =>
         {
             if (r.IsSuccess)
@@ -190,6 +199,46 @@ public class Demo : MonoBehaviour
         };
 
         SocialShare(opts);
+    }
+
+    public void OnGetDownloadUrl() 
+    {
+        ComboSDK.GetDownloadUrl(r=>{
+            if(r.IsSuccess){
+                var result = r.Data;
+                downloadUrlPanel.Show(result.downloadUrl);
+                Toast.Show("获取 Url 成功");
+                Debug.Log("获取 Url 成功");
+            }
+            else{
+                var error = r.Error;
+                Toast.Show("无法获取 Url: " + error.Message);
+                Debug.LogError("获取 Url 失败: " + error.Message);
+            }
+        });
+    }
+
+    public void OnQuit() 
+    {
+        if (ComboSDK.IsFeatureAvailable(Feature.QUIT))
+        {
+            Debug.Log("Game Exiting");
+            ComboSDK.Quit(result =>
+            {
+                if (result.IsSuccess)
+                {
+                    Application.Quit();
+                }
+                else
+                {
+                    Debug.LogError("退出失败：" + result.Error);
+                }
+            });
+        }
+        else
+        {
+            Application.Quit();
+        }
     }
 
     private void SocialShare(SystemShareOptions opts) 
