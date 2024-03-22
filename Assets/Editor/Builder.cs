@@ -46,41 +46,6 @@ public class Builder : EditorWindow
         public static string bundleVersion = "1.0.0";
     }
 
-    internal static class AndroidProps
-    {
-        public static string keystorePath = "Secret/Android/ddcr.keystore";
-        public static string keystorePass = "123456";
-        public static string keystoreAlias = "ddcr";
-        public static string keystoreAliasPass = "123456";
-
-        //TODO: 临时方案：支持切换签名
-        public static void UpdateKeystoreConfig()
-        {
-            var signature = Environment.GetEnvironmentVariable("SIGNATURE");
-            if (signature == null)
-                return;
-            switch (signature)
-            {
-                case "ddcr":
-                    {
-                        keystorePath = "Secret/Android/ddcr.keystore";
-                        keystorePass = "123456";
-                        keystoreAlias = "ddcr";
-                        keystoreAliasPass = "123456";
-                        break;
-                    }
-                case "catsoup":
-                    {
-                        keystorePath = "Secret/Android/catsoup.jks";
-                        keystorePass = "catsoup99";
-                        keystoreAlias = "catsoup";
-                        keystoreAliasPass = "catsoup99";
-                        break;
-                    }
-            }
-        }
-    }
-
     [MenuItem("ComboSDK/Build Demo", false, 9)]
     static void BuildDemo()
     {
@@ -152,30 +117,12 @@ public class Builder : EditorWindow
 
     static void BuildAndroidDemo()
     {
-        AndroidProps.UpdateKeystoreConfig();
-        BuildAndroidDemo(AndroidProps.keystorePath);
-    }
-
-    static void BuildAndroidDemo(string keyStorePath)
-    {
         var exportPath = Environment.GetEnvironmentVariable("EXPORT_PATH");
         PlayerSettings.bundleVersion = Environment.GetEnvironmentVariable("BUNDLE_VERSION");
         var splitVer = PlayerSettings.bundleVersion.Split(new char[] { '.' }, 2);
         if (splitVer.Length > 1)
             PlayerSettings.Android.bundleVersionCode = int.Parse(splitVer[0]);
         CreateDir(exportPath);
-        var keystorePass = AndroidProps.keystorePass;
-        var keystoreAlias = AndroidProps.keystoreAlias;
-        var keystoreAliasPass = AndroidProps.keystorePass;
-
-        UnityEngine.Debug.Log(
-            $"ExportPath: {exportPath} KeystorePass: {keystorePass} KeystoreAlias: {keystoreAlias} KeystoreAliasPass: {keystoreAliasPass}"
-        );
-
-        PlayerSettings.Android.keystoreName = keyStorePath;
-        PlayerSettings.Android.keystorePass = keystorePass;
-        PlayerSettings.Android.keyaliasName = keystoreAlias;
-        PlayerSettings.Android.keyaliasPass = keystoreAliasPass;
 
         EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
         EditorUserBuildSettings.exportAsGoogleAndroidProject = true;
