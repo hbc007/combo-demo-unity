@@ -1384,7 +1384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   addBtn: {fileID: 2153689327279248873}
   subBtn: {fileID: 688751437492518995}
-  quantityText: {fileID: 8863004211734704460}
+  productQuantityText: {fileID: 8863004211734704460}
 --- !u!1 &5022808306952913301
 GameObject:
   m_ObjectHideFlags: 0
