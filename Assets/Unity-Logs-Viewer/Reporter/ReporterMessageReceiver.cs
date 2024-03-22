@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class ReporterMessageReceiver : MonoBehaviour
 {
+    public GameObject background;
 	Reporter reporter;
 	void Start()
 	{
@@ -26,17 +27,23 @@ public class ReporterMessageReceiver : MonoBehaviour
 
 	void OnHideReporter()
 	{
-		//TO DO : resume your game
-	}
+        //TO DO : resume your game
+        GameObject.Destroy(background);
+    }
 
 	void OnShowReporter()
 	{
-		//TO DO : pause your game and disable its GUI
-	}
+        //TO DO : pause your game and disable its GUI
+		background = CreateBackground();
+    }
 
 	void OnLog(Reporter.Log log)
 	{
 		//TO DO : put you custom code 
 	}
+
+	GameObject CreateBackground() {
+        return GameObject.Instantiate(Resources.Load("Prefabs/Background")) as GameObject;
+    }
 
 }

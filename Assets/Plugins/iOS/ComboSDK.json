@@ -1,0 +1,29 @@
+{
+  "distro": "app_store",
+  "domains": [
+    "thinking_data",
+    "sentry",
+    "seayoo_account",
+    "app_store_connect",
+    "facebook",
+    "topon"
+  ],
+  "parameters": {
+    "game_guest_auto_login_enabled": "false",
+    "game_guest_enabled": "true",
+    "sdk_ios_version": "1.1.2",
+    "sdk_unity_version": "0.1.0",
+    "seayoo_account_game_api_endpoint": "https://account-game-api.dev.seayoo.com",
+    "sentry_ios_app_hang_timeout_interval": "9",
+    "sentry_ios_app_hang_tracking_enabled": "true",
+    "sentry_ios_auto_performance_tracing_enabled": "true",
+    "sentry_ios_debug_enabled": "true",
+    "sentry_ios_dsn": "https://b434401ac9ef4ab4a2af060c71061612@sentry.seayoo.com/46",
+    "sentry_ios_enabled": "true",
+    "sentry_ios_oom_tracking_enabled": "true",
+    "thinking_data_app_id": "ff95310ede16427b938cd9cd7697304b",
+    "thinking_data_receiver_url": "https://ta.seayoo.com",
+    "topon_ios_app_id": "a65531699aa90d",
+    "topon_ios_app_key": "acad04f3444a1413cdd6a68e5224e941e"
+  }
+}

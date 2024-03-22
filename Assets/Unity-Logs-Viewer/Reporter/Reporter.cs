@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 #if UNITY_CHANGE3
 using UnityEngine.SceneManagement;
+using System;
 #endif
 #if UNITY_CHANGE4
 using UnityEngine.Networking;
@@ -282,7 +283,7 @@ public class Reporter : MonoBehaviour
 	GUISkin logScrollerSkin;
 	GUISkin graphScrollerSkin;
 
-	public Vector2 size = new Vector2(32, 32);
+	public Vector2 size = new Vector2(46, 46);
 	public float maxSize = 20;
 	public int numOfCircleToShow = 1;
 	static string[] scenes;
@@ -425,7 +426,7 @@ public class Reporter : MonoBehaviour
 		showWarning = (PlayerPrefs.GetInt("Reporter_showWarning", 1) == 1) ? true : false;
 		showError = (PlayerPrefs.GetInt("Reporter_showError", 1) == 1) ? true : false;
 		filterText = PlayerPrefs.GetString("Reporter_filterText");
-		size.x = size.y = PlayerPrefs.GetFloat("Reporter_size", 32);
+		size.x = size.y = PlayerPrefs.GetFloat("Reporter_size", 48);
 
 
 		showClearOnNewSceneLoadedButton = (PlayerPrefs.GetInt("Reporter_showClearOnNewSceneLoadedButton", 1) == 1) ? true : false;
@@ -437,8 +438,18 @@ public class Reporter : MonoBehaviour
 		showCopyButton = (PlayerPrefs.GetInt("Reporter_showCopyButton", 1) == 1) ? true : false;
 		showSaveButton = (PlayerPrefs.GetInt("Reporter_showSaveButton", 1) == 1) ? true : false;
 
+        // Disable unused button for combosdk-demo
+        showClearOnNewSceneLoadedButton = false;
+        showTimeButton = false;
+        showSceneButton = false;
+        showMemButton = false;
+        showFpsButton = false;
+        showSearchText = false;
+        showCopyButton = true;
+        showSaveButton = true;
 
-		initializeStyle();
+
+        initializeStyle();
 
 		Initialized = true;
 
@@ -502,7 +513,7 @@ public class Reporter : MonoBehaviour
 		backStyle = new GUIStyle();
 		backStyle.normal.background = images.even_logImage;
 		backStyle.clipping = TextClipping.Clip;
-		backStyle.fontSize = (int)(size.y / 2);
+		backStyle.fontSize = (int)(size.y / 1.5);
 
 		evenLogStyle = new GUIStyle();
 		evenLogStyle.normal.background = images.even_logImage;
@@ -510,7 +521,7 @@ public class Reporter : MonoBehaviour
 		evenLogStyle.clipping = TextClipping.Clip;
 		evenLogStyle.alignment = TextAnchor.UpperLeft;
 		evenLogStyle.imagePosition = ImagePosition.ImageLeft;
-		evenLogStyle.fontSize = (int)(size.y / 2);
+		evenLogStyle.fontSize = (int)(size.y / 1.5);
 		//evenLogStyle.wordWrap = true;
 
 		oddLogStyle = new GUIStyle();
@@ -519,7 +530,7 @@ public class Reporter : MonoBehaviour
 		oddLogStyle.clipping = TextClipping.Clip;
 		oddLogStyle.alignment = TextAnchor.UpperLeft;
 		oddLogStyle.imagePosition = ImagePosition.ImageLeft;
-		oddLogStyle.fontSize = (int)(size.y / 2);
+		oddLogStyle.fontSize = (int)(size.y / 1.5);
 		//oddLogStyle.wordWrap = true ;
 
 		logButtonStyle = new GUIStyle();
@@ -529,8 +540,8 @@ public class Reporter : MonoBehaviour
 		logButtonStyle.alignment = TextAnchor.UpperLeft;
 		//logButtonStyle.imagePosition = ImagePosition.ImageLeft ;
 		//logButtonStyle.wordWrap = true;
-		logButtonStyle.fontSize = (int)(size.y / 2);
-		logButtonStyle.padding = new RectOffset(paddingX, paddingX, paddingY, paddingY);
+		logButtonStyle.fontSize = (int)(size.y / 1.5);
+		logButtonStyle.padding = new RectOffset(paddingX, paddingX, paddingY-2, paddingY-2);
 
 		selectedLogStyle = new GUIStyle();
 		selectedLogStyle.normal.background = images.selectedImage;
@@ -539,7 +550,7 @@ public class Reporter : MonoBehaviour
 		selectedLogStyle.alignment = TextAnchor.UpperLeft;
 		selectedLogStyle.normal.textColor = Color.white;
 		//selectedLogStyle.wordWrap = true;
-		selectedLogStyle.fontSize = (int)(size.y / 2);
+		selectedLogStyle.fontSize = (int)(size.y / 1.5);
 
 		selectedLogFontStyle = new GUIStyle();
 		selectedLogFontStyle.normal.background = images.selectedImage;
@@ -548,12 +559,12 @@ public class Reporter : MonoBehaviour
 		selectedLogFontStyle.alignment = TextAnchor.UpperLeft;
 		selectedLogFontStyle.normal.textColor = Color.white;
 		//selectedLogStyle.wordWrap = true;
-		selectedLogFontStyle.fontSize = (int)(size.y / 2);
-		selectedLogFontStyle.padding = new RectOffset(paddingX, paddingX, paddingY, paddingY);
+		selectedLogFontStyle.fontSize = (int)(size.y / 1.5);
+		selectedLogFontStyle.padding = new RectOffset(paddingX, paddingX, paddingY-2, paddingY-2);
 
 		stackLabelStyle = new GUIStyle();
 		stackLabelStyle.wordWrap = true;
-		stackLabelStyle.fontSize = (int)(size.y / 2);
+		stackLabelStyle.fontSize = (int)(size.y / 1.5);
 		stackLabelStyle.padding = new RectOffset(paddingX, paddingX, paddingY, paddingY);
 
 		scrollerStyle = new GUIStyle();
@@ -562,7 +573,7 @@ public class Reporter : MonoBehaviour
 		searchStyle = new GUIStyle();
 		searchStyle.clipping = TextClipping.Clip;
 		searchStyle.alignment = TextAnchor.LowerCenter;
-		searchStyle.fontSize = (int)(size.y / 2);
+		searchStyle.fontSize = (int)(size.y / 1.5);
 		searchStyle.wordWrap = true;
 
 
@@ -1182,7 +1193,7 @@ public class Reporter : MonoBehaviour
 			showLog = !showLog;
 			calculateCurrentLog();
 		}
-		if (GUILayout.Button(logsText, nonStyle, GUILayout.Width(size.x * 2), GUILayout.Height(size.y * 2)))
+		if (GUILayout.Button(logsText, nonStyle, GUILayout.Width(size.x * 1), GUILayout.Height(size.y * 2)))
 		{
 			showLog = !showLog;
 			calculateCurrentLog();
@@ -1194,7 +1205,7 @@ public class Reporter : MonoBehaviour
 			showWarning = !showWarning;
 			calculateCurrentLog();
 		}
-		if (GUILayout.Button(logsWarningText, nonStyle, GUILayout.Width(size.x * 2), GUILayout.Height(size.y * 2)))
+		if (GUILayout.Button(logsWarningText, nonStyle, GUILayout.Width(size.x * 1), GUILayout.Height(size.y * 2)))
 		{
 			showWarning = !showWarning;
 			calculateCurrentLog();
@@ -1206,14 +1217,14 @@ public class Reporter : MonoBehaviour
 			showError = !showError;
 			calculateCurrentLog();
 		}
-		if (GUILayout.Button(logsErrorText, nonStyle, GUILayout.Width(size.x * 2), GUILayout.Height(size.y * 2)))
+		if (GUILayout.Button(logsErrorText, nonStyle, GUILayout.Width(size.x * 1), GUILayout.Height(size.y * 2)))
 		{
 			showError = !showError;
 			calculateCurrentLog();
 		}
 		GUILayout.EndHorizontal();
 
-		if (GUILayout.Button(closeContent, barStyle, GUILayout.Width(size.x * 2), GUILayout.Height(size.y * 2)))
+		if (GUILayout.Button(closeContent, barStyle, GUILayout.Width(size.x * 5), GUILayout.Height(size.y * 2)))
 		{
 			show = false;
 			ReporterGUI gui = gameObject.GetComponent<ReporterGUI>();
@@ -1386,7 +1397,7 @@ public class Reporter : MonoBehaviour
 
 
 
-			GUILayout.BeginHorizontal(currentLogStyle);
+			GUILayout.BeginHorizontal(currentLogStyle, GUILayout.Height(size.y));
 			if (log == selectedLog)
 			{
 				GUILayout.Box(content, nonStyle, GUILayout.Width(size.x), GUILayout.Height(size.y));
@@ -1963,9 +1974,12 @@ public class Reporter : MonoBehaviour
 		//addSample();
 
 #if UNITY_CHANGE3
-		int sceneIndex = SceneManager.GetActiveScene().buildIndex;
-		if (sceneIndex != -1 && string.IsNullOrEmpty(scenes[sceneIndex]))
-			scenes[SceneManager.GetActiveScene().buildIndex] = SceneManager.GetActiveScene().name;
+        try
+        {
+            int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+            if (sceneIndex != -1 && string.IsNullOrEmpty(scenes[sceneIndex]))
+                scenes[SceneManager.GetActiveScene().buildIndex] = SceneManager.GetActiveScene().name;
+        } catch (Exception) { return; }
 #else
 		int sceneIndex = Application.loadedLevel;
 		if (sceneIndex != -1 && string.IsNullOrEmpty(scenes[Application.loadedLevel]))

@@ -1,0 +1,21 @@
+{
+  "distro": "windows",
+  "domains": [
+    "seayoo_account",
+    "sentry",
+    "thinking_data"
+  ],
+  "parameters": {
+    "game_eula_content": "       欢迎您使用本游戏，我们将按照本游戏的 \u003ca href=\"https://www.seayoo.com/legal/index.html?g=paopao\u0026id=game-agreement\"\u003e《网络游戏使用协议》\u003c/a\u003e向您提供服务，并按照\u003ca href=\"https://www.seayoo.com/legal/index.html?g=paopao\u0026id=privacy-privacy\"\u003e《隐私政策》\u003c/a\u003e 的规定收集和处理您的个人信息。请您在使用本游戏前仔细阅读并充分理解上述协议，尤其是以加粗字体进行标注的条款。\n\n       当您点击同意表示您已理解并接受本游戏的： \u003ca href=\"https://www.seayoo.com/legal/index.html?g=paopao\u0026id=game-agreement\"\u003e《网络游戏使用协议》\u003c/a\u003e及\u003ca href=\"https://www.seayoo.com/legal/index.html?g=paopao\u0026id=privacy-privacy\"\u003e《隐私政策》\u003c/a\u003e  。\n       如果您拒绝同意，您可能无法享受更好的游戏服务。",
+    "game_eula_date": "2024-01-21",
+    "game_eula_title": "用户隐私保护指引",
+    "game_guest_auto_login_enabled": "false",
+    "game_guest_enabled": "true",
+    "sdk_unity_version": "0.1.0",
+    "sdk_windows_version": "0.1.0",
+    "seayoo_account_game_api_endpoint": "https://account-game-api.dev.seayoo.com",
+    "sentry_windows_dsn": "https://b434401ac9ef4ab4a2af060c71061612@sentry.seayoo.com/46",
+    "thinking_data_app_id": "2b4ded2d67014fbc8638c355ab9bde93",
+    "thinking_data_receiver_url": "https://ta.seayoo.com"
+  }
+}
